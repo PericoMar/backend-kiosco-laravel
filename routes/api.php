@@ -8,3 +8,5 @@ use App\Http\Controllers\ArticuloController;
 Route::get('familias', [FamiliaController::class, 'index']);
 
 Route::get('articulos', [ArticuloController::class, 'getProductsWithCustomizations']);
+
+Route::get('/print-receipt', [PrintController::class, 'printReceipt']);
