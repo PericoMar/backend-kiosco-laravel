@@ -1,9 +1,12 @@
 <?php
 
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\EscposImage;
-use Illuminate\Http\Request;
 
 class PrintController extends Controller
 {
@@ -14,34 +17,35 @@ class PrintController extends Controller
 
         try {
             // Conectar a la impresora en red
-            $connector = new NetworkPrintConnector("192.168.1.100", 9100); // IP de la impresora
+            $printerName = 'XP-80C'; // Nombre de la impresora
+            $connector = new WindowsPrintConnector($printerName);  // IP de la impresora
             $printer = new Printer($connector);
 
             // Imprimir el logo (asegúrate de que el archivo está en la ruta correcta)
-            $logo = EscposImage::load(public_path('logos/logo.png'), false); 
-            $printer->setJustification(Printer::JUSTIFY_CENTER); // Centrar
-            $printer->bitImage($logo); // Imprimir imagen
+            // $logo = EscposImage::load(public_path('logos/logo.png'), false); 
+            // $printer->setJustification(Printer::JUSTIFY_CENTER); // Centrar
+            // $printer->bitImage($logo); // Imprimir imagen
 
             // Imprimir cabecera del ticket
-            $printer->setTextSize(2, 2); // Texto grande
-            $printer->text("Pedido N° " . $order['id'] . "\n");
-            $printer->setTextSize(1, 1); // Texto normal
-            $printer->text("Fecha: " . date('Y-m-d H:i:s') . "\n");
-            $printer->text("Método de pago: " . $order['paymentMethod'] . "\n");
-            $printer->text("Opción de consumo: " . $order['consumptionOption'] . "\n\n");
+            // $printer->setTextSize(2, 2); // Texto grande
+            // $printer->text("Pedido N° " . $order['id'] . "\n");
+            // $printer->setTextSize(1, 1); // Texto normal
+            // $printer->text("Fecha: " . date('Y-m-d H:i:s') . "\n");
+            // $printer->text("Método de pago: " . $order['paymentMethod'] . "\n");
+            // $printer->text("Opción de consumo: " . $order['consumptionOption'] . "\n\n");
 
-            // Imprimir los artículos del pedido
-            $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->text("Artículos:\n");
-            foreach ($order['items'] as $item) {
-                $this->printOrderItem($printer, $item);
-            }
+            // // Imprimir los artículos del pedido
+            // $printer->setJustification(Printer::JUSTIFY_LEFT);
+            // $printer->text("Artículos:\n");
+            // foreach ($order['items'] as $item) {
+            //     $this->printOrderItem($printer, $item);
+            // }
 
-            // Imprimir el total
-            $printer->text("\n---------------------------\n");
-            $printer->setTextSize(2, 2); // Texto grande
-            $printer->text("Total: " . $order['total'] . " €\n");
-            $printer->setTextSize(1, 1); // Texto normal
+            // // Imprimir el total
+            // $printer->text("\n---------------------------\n");
+            // $printer->setTextSize(2, 2); // Texto grande
+            // $printer->text("Total: " . $order['total'] . " €\n");
+            // $printer->setTextSize(1, 1); // Texto normal
 
             // Finalizar el ticket
             $printer->text("\nGracias por su compra\n");
