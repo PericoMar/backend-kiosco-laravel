@@ -10,4 +10,4 @@ Route::get('familias', [FamiliaController::class, 'index']);
 
 Route::get('articulos', [ArticuloController::class, 'getProductsWithCustomizations']);
 
-Route::get('print-receipt', [PrintController::class, 'printReceipt']);
+Route::get('print-receipt', [PrintController::class, 'printHelloWorld']);
