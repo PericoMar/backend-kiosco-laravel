@@ -1,0 +1,24 @@
+Necesito un ejecutable que me permita instalar:
+- Git (Opcional si inserto el proyecto directamente, pero no estare actualizado)
+- Node
+- Angular
+- PHP (Con las extensiones pertinenetes)
+- Composer
+- Laravel
+
+Win + R -> sysdm.cpl -> Propiedades del sistema -> Opciones avanzadas -> Variables de entorno -> En Path añadir la ruta a php (C:\xamp\php)
+Cambiar las variables de entorno a donde este instalado PHP para poder usarlo.
+
+Correr los proyectos en el mismo kiosco:
+- ng serve
+- php artisan serve
+
+Abrir el navegador y poner pantalla completa.
+
+Quitar la configuración que te permite navegar entre pestañas y
+te permite abrir las notificaciones. EdgeUI
+
+Impresora conocer la IP de la impresora.
+
+Publicar la impresora desde la configuración.
+
