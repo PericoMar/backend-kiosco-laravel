@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Familia;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log; 
 
 class FamiliaController extends Controller
 {
     public function index(): JsonResponse
     {
-        $families = Family::getFamilies();
+        $families = Familia::getFamilies();
         return response()->json($families);
     }
 
