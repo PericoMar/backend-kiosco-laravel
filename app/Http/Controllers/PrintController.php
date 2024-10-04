@@ -40,7 +40,7 @@ class PrintController extends Controller
 
             // Conectar a la impresora en red
             // $connector = new NetworkPrintConnector("192.168.0.230", 9100); // IP de la impresora
-            $connector = new WindowsPrintConnector("POS-80C"); 
+            $connector = new WindowsPrintConnector("XP-80C"); 
             $printer = new Printer($connector);
 
 
