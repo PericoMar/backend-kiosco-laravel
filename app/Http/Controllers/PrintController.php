@@ -21,17 +21,27 @@ class PrintController extends Controller
     public function printReceiptPlainText(Request $request)
     {
 
+        $validated = $request->validate([
+            'id' => 'required|numeric',
+            'paymentMethod' => 'nullable|string',
+            'consumptionOption' => 'required|string',
+            'total' => 'required|numeric',
+            'items' => 'required|array'
+        ]);
+
         // Recibe el objeto Order desde la request
-        $order = $request->input('order'); 
+        $id = $request->input('id');
+        $paymentMethod = $request->input('paymentMethod');
+        $consumptionOption = $request->input('consumptionOption');
+        $total = $request->input('total');
+        $items = $request->input('items');
 
         try {
+
             // Conectar a la impresora en red
             // $connector = new NetworkPrintConnector("192.168.0.230", 9100); // IP de la impresora
             $connector = new WindowsPrintConnector("POS-80C"); 
             $printer = new Printer($connector);
-
-            $text = mb_convert_encoding("Precio: €", "ISO-8859-1");
-            $printer->text($text);
 
 
             // if (!file_exists(public_path('storage/logos/LogoKC.png'))) {
@@ -45,23 +55,23 @@ class PrintController extends Controller
 
             // Imprimir cabecera del ticket
             $printer->setTextSize(2, 2); // Texto grande
-            $printer->text("Pedido N° " . $order['id'] . "\n");
+            $printer->text("Pedido N° " . $id . "\n");
             $printer->setTextSize(1, 1); // Texto normal
             $printer->text("Fecha: " . date('Y-m-d H:i:s') . "\n");
-            $printer->text("Método de pago: " . $order['paymentMethod'] . "\n");
-            $printer->text("Opción de consumo: " . $order['consumptionOption'] . "\n\n");
+            $printer->text("Método de pago: " . $paymentMethod . "\n");
+            $printer->text("Opción de consumo: " . $consumptionOption . "\n\n");
 
             // Imprimir los artículos del pedido
             $printer->setJustification(Printer::JUSTIFY_LEFT);
             $printer->text("Artículos:\n");
-            foreach ($order['items'] as $item) {
+            foreach ($items as $item) {
                 $this->printOrderItem($printer, $item);
             }
 
             // Imprimir el total
             $printer->text("\n---------------------------\n");
             $printer->setTextSize(2, 2); // Texto grande
-            $printer->text("Total: " . $order['total'] . " €\n");
+            $printer->text("Total: " . $total . " €\n");
             $printer->setTextSize(1, 1); // Texto normal
 
             // Finalizar el ticket

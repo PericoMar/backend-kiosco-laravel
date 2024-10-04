@@ -12,4 +12,4 @@ Route::get('articulos', [ArticuloController::class, 'getProductsWithCustomizatio
 
 Route::get('print-receipt', [PrintController::class, 'printReceipt']);
 
-Route::get('print-receipt-text', [PrintController::class, 'printReceiptPlainText']);
+Route::post('print-receipt-text', [PrintController::class, 'printReceiptPlainText']);
