@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class ArticuloController extends Controller
 {
-    public function getProductsWithCustomizations($tipo_tarifa_venta_Param)
+    public function getProductsWithCustomizations()
     {
         $tipo_tarifa_venta = $tipo_tarifa_venta_Param ?? 2; // Aqui asignamos el tipo de tarifa que queramos. 
         $products = DB::table('Articulos')
