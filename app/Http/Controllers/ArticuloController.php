@@ -11,7 +11,9 @@ class ArticuloController extends Controller
 {
     public function getProductsWithCustomizations()
     {
-        $tipo_tarifa_venta = $tipo_tarifa_venta_Param ?? 2; // Aqui asignamos el tipo de tarifa que queramos. 
+        // Aqui asignamos el tipo de tarifa que queramos.
+        $tipo_tarifa_venta = $tipo_tarifa_venta_Param ?? 2; 
+
         $products = DB::table('Articulos')
                         ->join('Tarifa_Venta', 'Articulos.id', '=', 'Tarifa_Venta.articulo_id')
                         ->select('Articulos.*', 'Tarifa_Venta.precio_venta as precio')
@@ -20,7 +22,6 @@ class ArticuloController extends Controller
                         Log::info("Articulos: ", $products->toArray());
 
         $questions = DB::table('Preguntas_Articulo')->get();
-        // Log::info("Preguntas articulos: ", $questions->toArray());
 
         $options = DB::table('Opciones_Preguntas_Articulo')->get();
         
@@ -64,26 +65,7 @@ class ArticuloController extends Controller
             ];
         });
 
-        Log::info("PRODUCTS AUX: ", $productsWithCustomizations->toArray());
-
-
-        /* $productsWithCustomizations = $productsAux->map(function($product) use ($customizationQuestions) {
-            return [
-                'id' => $product->id,
-                'name' => $product->nombre,
-                'price' => $product->precio,
-                'taxes' => $product->tipo_iva_id,
-                'img' => $product->imagen,
-                'familyId' => $product->familia_id,
-                'description' => $product->descripcion ?? 'Comida de calidad',
-                'customizations' => [], // Añade personalizaciones si es necesario
-                'customizationQuestions' => $customizationQuestions
-            ];
-        }); */
-
-        Log::info("Productos con preguntas: ", $productsWithCustomizations->toArray());
-
-
+        // Devuelve los productos con sus customizaciones en formato JSON.
         return response()->json($productsWithCustomizations->toArray());
     }
 
