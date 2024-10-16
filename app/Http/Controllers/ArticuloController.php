@@ -19,7 +19,6 @@ class ArticuloController extends Controller
                         ->select('Articulos.*', 'Tarifa_Venta.precio_venta as precio')
                         ->where('Tarifa_Venta.tipo_tarifa_id', '=', $tipo_tarifa_venta)
                         ->get();
-                        Log::info("Articulos: ", $products->toArray());
 
         $questions = DB::table('Preguntas_Articulo')->get();
 
@@ -45,11 +44,11 @@ class ArticuloController extends Controller
                         // Busca el producto asociado
                         return [
                             'id' => $option->id,
-                            'value' => $option->suplemento ?? 'well done',
+                            'value' => $option->suplemento ?? "Well done",
                             'img' => $product->imagen ?? null, // Si tiene una imagen, se asigna
-                            'price' => $product->precio ?? 0 // Si tiene un precio, se asigna
+                            'price' => $product->precio ?? 0.25 // Si tiene un precio, se asigna
                         ];
-                    })->toArray()
+                    })->values()->toArray()
                 ];
             });
             // Retornar el producto
@@ -61,7 +60,7 @@ class ArticuloController extends Controller
                 'img' => $product->imagen ?? null,
                 'familyId' => $product->familia_id,
                 'description' => $product->descripcion,
-                'customizationQuestions' => $customizationQuestions->toArray()
+                'customizationQuestions' => $customizationQuestions->values()->toArray()
             ];
         });
 
