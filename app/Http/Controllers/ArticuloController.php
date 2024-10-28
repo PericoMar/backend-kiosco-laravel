@@ -16,10 +16,15 @@ class ArticuloController extends Controller
         $tipo_tarifa_venta = $tipo_tarifa_venta_Param ?? 1; 
 
         $products = DB::table('Articulos')
-                        ->join('Tarifa_Venta', 'Articulos.id', '=', 'Tarifa_Venta.articulo_id')
-                        ->select('Articulos.*', 'Tarifa_Venta.precio_venta as precio')
-                        ->where('Tarifa_Venta.tipo_tarifa_id', '=', $tipo_tarifa_venta)
-                        ->get();
+            ->join('Tarifa_Venta', 'Articulos.id', '=', 'Tarifa_Venta.articulo_id')
+            ->select('Articulos.*', 'Tarifa_Venta.precio_venta as precio')
+            ->where('Tarifa_Venta.tipo_tarifa_id', '=', $tipo_tarifa_venta)
+            ->whereNotIn('Articulos.id', function($query) {
+                $query->select('articulo_id')
+                    ->from('Opciones_Preguntas_Articulo');
+            })
+            ->get();
+
         
         Log::info('Productos: ' . $products);
 
@@ -46,12 +51,13 @@ class ArticuloController extends Controller
                     })->map(function($option) {
                         // Busca el producto asociado
                         // Coger el producto con el id $option->id
-                        $product = DB::table('Articulos')->where('id', $option->articulo_id)->first();
+                        $modifier = DB::table('Articulos')->where('id', $option->articulo_id)->first();
+                        $tarifa_venta = DB::table('Tarifa_Venta')->where('articulo_id', $option->articulo_id)->first();
                         return [
                             'id' => $option->id,
-                            'value' => $product->articulo,
-                            'img' => $product->imagen ?? null, // Si tiene una imagen, se asigna
-                            'price' => $product->precio ?? 0.25 // Si tiene un precio, se asigna
+                            'value' => $modifier->articulo,
+                            'img' => $modifier->imagen ?? null, // Si tiene una imagen, se asigna
+                            'price' => $tarifa_venta->precio_venta // Si tiene un precio, se asigna
                         ];
                     })->values()->toArray()
                 ];

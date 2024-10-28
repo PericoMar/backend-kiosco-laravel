@@ -11,12 +11,15 @@ class PreguntaArticulo extends Model
 
     protected $table = 'preguntas_articulo';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'orden',
         'texto',
         'articulo_id',
         'tipo_pregunta',
-        'unidades_maximas'
+        'unidades_maximas',
+        'unidades_minimas'
     ];
 
     // Relación con el modelo Articulo

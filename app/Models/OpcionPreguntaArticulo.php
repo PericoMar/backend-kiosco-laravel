@@ -11,6 +11,8 @@ class OpcionPreguntaArticulo extends Model
 
     protected $table = 'opciones_preguntas_articulo';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'pregunta_articulo_id',
         'orden',

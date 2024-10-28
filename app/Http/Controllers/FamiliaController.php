@@ -24,14 +24,6 @@ class FamiliaController extends Controller
                 'img' => 'required|string', // Suponiendo que es la ruta de la imagen
             ]);
 
-            // Crear una nueva instancia del modelo Articulo
-            // SELECT TOP (1000) [id]
-            //     ,[codigo]
-            //     ,[orden]
-            //     ,[visible_TPV]
-            //     ,[estado]
-            //     ,[imagen]
-            // FROM [KIOSCO].[dbo].[Familias]
 
             $familia = new Familia();
             $familia->codigo = $validatedData['name'];
