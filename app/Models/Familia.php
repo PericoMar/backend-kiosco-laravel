@@ -11,6 +11,8 @@ class Familia extends Model
 
     protected $table = 'familias';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'codigo',
         'orden',

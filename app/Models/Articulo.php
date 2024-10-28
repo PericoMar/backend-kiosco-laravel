@@ -11,6 +11,8 @@ class Articulo extends Model
 
     protected $table = 'articulos';
 
+    public $timestamps = false;
+
     // Si necesitas añadir más atributos masivos
     protected $fillable = [
         'articulo',
