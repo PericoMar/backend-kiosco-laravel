@@ -57,7 +57,7 @@ class ArticuloController extends Controller
                             'id' => $option->id,
                             'value' => $modifier->articulo,
                             'img' => $modifier->imagen ?? null, // Si tiene una imagen, se asigna
-                            'price' => $tarifa_venta->precio_venta // Si tiene un precio, se asigna
+                            'price' => $tarifa_venta->precio_venta ?? $option->suplemento // Si tiene un precio, se asigna
                         ];
                     })->values()->toArray()
                 ];
