@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Alergeno;
 
 class Articulo extends Model
 {
@@ -23,4 +25,9 @@ class Articulo extends Model
         'tipo_iva_id',
         'imagen'
     ];
+
+    public function alergenos(): BelongsToMany
+    {
+        return $this->belongsToMany(Alergeno::class, 'articulos_alergenos', 'articulo_id', 'alergeno_id');
+    }
 }

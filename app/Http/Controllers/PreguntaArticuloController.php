@@ -20,55 +20,49 @@ class PreguntaArticuloController extends Controller
         return response()->json($preguntas);
     }
 
-    public function store(Request $request)
+    public function update(Request $request, $id)
     {
         try {
             // Validar los datos de entrada
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
                 'productId' => 'required|integer',
-                'max' => 'required|integer',
-                'min' => 'required|integer'
+                'questionType' => 'required|string|max:255',
+                'description' => 'nullable|string|max:255',
+                'status' => 'nullable|integer',
+                'max' => 'nullable|integer',
+                'min' => 'nullable|integer'
             ]);
 
-            // protected $fillable = [
-            //     'orden',
-            //     'texto',
-            //     'articulo_id',
-            //     'tipo_pregunta',
-            //     'unidades_maximas',
-            //     'unidades_minimas'
-            // ];
+            // Buscar la pregunta existente
+            $pregunta = PreguntaArticulo::findOrFail($id);
 
-            $pregunta = new PreguntaArticulo();
+            // Actualizar los datos de la pregunta
             $pregunta->texto = $validatedData['name'];
             $pregunta->articulo_id = $validatedData['productId'];
+            $pregunta->tipo_pregunta = $validatedData['questionType'];
+            $pregunta->descripcion = $validatedData['description'];
+            $pregunta->estado = $validatedData['status'];
             $pregunta->unidades_maximas = $validatedData['max'];
             $pregunta->unidades_minimas = $validatedData['min'];
 
-            // Guardar el nuevo artículo en la base de datos
+            // Guardar cambios en la base de datos
             $pregunta->save();
 
-            return response()->json(['message' => 'Producto creado exitosamente', 'articulo' => $pregunta], 201);
+            return response()->json(['message' => 'Pregunta actualizada exitosamente', 'pregunta' => $pregunta], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Manejar errores de validación
             return response()->json(['message' => 'Error de validación', 'errors' => $e->validator->errors()], 422);
         } catch (\Exception $e) {
             // Manejar cualquier otro error
-            return response()->json(['message' => 'Error al crear el producto', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Error al actualizar la pregunta', 'error' => $e->getMessage()], 500);
         }
     }
+
 
     public function show($id)
     {
         $pregunta = PreguntaArticulo::findOrFail($id);
-        return response()->json($pregunta);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $pregunta = PreguntaArticulo::findOrFail($id);
-        $pregunta->update($request->all());
         return response()->json($pregunta);
     }
 
