@@ -10,6 +10,8 @@ use App\Http\Controllers\OpcionPreguntaArticuloController;
 
 Route::get('familias', [FamiliaController::class, 'index']);
 Route::post('familia', [FamiliaController::class, 'store']);
+Route::put('familia/{id}', [FamiliaController::class, 'update']);
+Route::delete('familia/{id}', [FamiliaController::class, 'destroy']);
 
 Route::get('articulos', [ArticuloController::class, 'getProductsWithCustomizations']);
 Route::post('articulo', [ArticuloController::class, 'store']);

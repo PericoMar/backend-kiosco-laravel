@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\TarifaVenta;
 use App\Models\PreguntaArticulo;
+use App\Models\OpcionPreguntaArticulo;
+use App\Models\Alergeno;
 
 class ArticuloController extends Controller
 {
@@ -38,6 +40,12 @@ class ArticuloController extends Controller
             $filteredQuestions = $questions->filter(function($question) use ($product) {
                 return $question->articulo_id == $product->id;
             });
+
+            $alergenos = DB::table('Articulos_Alergenos')
+                ->join('Alergenos', 'Articulos_Alergenos.alergeno_id', '=', 'Alergenos.id')
+                ->where('Articulos_Alergenos.articulo_id', $product->id)
+                ->pluck('Alergenos.nombre')
+                ->toArray();
             // Preguntas y opciones correspondientes al artículo
             $customizationQuestions = $filteredQuestions->map(function($question) use ($options) {
                 return [
@@ -71,6 +79,7 @@ class ArticuloController extends Controller
                 'price' => $product->precio,
                 'status' => $product->estado ? 'Habilitado' : 'Deshabilitado',
                 'taxes' => $product->impuestos ?? 0,
+                'allergens' => $alergenos,
                 'img' => $product->imagen ?? null,
                 'familyId' => $product->familia_id,
                 'description' => $product->descripcion,
@@ -94,11 +103,13 @@ class ArticuloController extends Controller
             // Validar los datos de entrada
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'price' => 'required|numeric',
+                'price_1' => 'required|numeric',
+                'price_2' => 'nullable|numeric',
+                'price_3' => 'nullable|numeric',
                 'img' => 'required|string',
                 'familyId' => 'required|integer',
                 'description' => 'nullable|string',
-                'status' => 'required|boolean',
+                'status' => 'required|integer',
                 'iva' => 'required|integer'
             ]);
 
@@ -115,14 +126,22 @@ class ArticuloController extends Controller
             // Guardar el nuevo artículo en la base de datos
             $articulo->save();
 
-            // Guardar el precio en la tabla Tarifa_venta
-            $tarifaVenta = new TarifaVenta();
-            $tarifaVenta->precio_venta = $validatedData['price'];
-            $tarifaVenta->tipo_tarifa_id = 1; // Establece el tipo tarifa como 1
-            $tarifaVenta->articulo_id = $articulo->id; // Relaciona con el nuevo artículo
+            $prices = [
+                1 => $validatedData['price_1'],
+                2 => $validatedData['price_2'],
+                3 => $validatedData['price_3']
+            ];
 
-            // Guardar la tarifa en la base de datos
-            $tarifaVenta->save();
+            foreach ($prices as $tipoTarifaId => $price) {
+                if ($price !== null) { // Verificar que el precio no sea null
+                    $tarifaVenta = new TarifaVenta();
+                    $tarifaVenta->precio_venta = $price;
+                    $tarifaVenta->tipo_tarifa_id = $tipoTarifaId;
+                    $tarifaVenta->articulo_id = $articulo->id;
+                    $tarifaVenta->save();
+                }
+            }
+
 
             return response()->json(['message' => 'Producto creado exitosamente', 'articulo' => $articulo], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -251,12 +270,15 @@ class ArticuloController extends Controller
             // Validar los datos de entrada
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'price' => 'required|numeric',
+                'price_1' => 'required|numeric',
+                'price_2' => 'nullable|numeric',
+                'price_3' => 'nullable|numeric',
                 'img' => 'required|string',
                 'familyId' => 'required|integer',
                 'description' => 'nullable|string',
-                'status' => 'required|boolean',
-                'iva' => 'required|integer'
+                'status' => 'required|integer',
+                'iva' => 'required|integer',
+                'allergens' => 'nullable|array'
             ]);
 
             // Encontrar el artículo existente
@@ -270,19 +292,30 @@ class ArticuloController extends Controller
             $articulo->estado = $validatedData['status'] == 'Habilitado' ? 1 : 0;
             $articulo->visible_TPV = true;
             $articulo->tipo_iva_id = $validatedData['iva'];
-            
+            $alergenos = $validatedData['allergens'] ?? [];
+
             // Guardar cambios en la base de datos
             $articulo->save();
 
-            // Actualizar o crear el precio en la tabla Tarifa_venta
-            $tarifaVenta = TarifaVenta::firstOrNew([
-                'articulo_id' => $articulo->id,
-                'tipo_tarifa_id' => 1
-            ]);
-            $tarifaVenta->precio_venta = $validatedData['price'];
-            
-            // Guardar la tarifa en la base de datos
-            $tarifaVenta->save();
+            // Crear o actualizar cada tipo de tarifa si el precio no es null
+            $prices = [
+                1 => $validatedData['price_1'],
+                2 => $validatedData['price_2'],
+                3 => $validatedData['price_3']
+            ];
+
+            foreach ($prices as $tipoTarifaId => $price) {
+                if ($price !== null) { // Verificar que el precio no sea null
+                    $tarifaVenta = TarifaVenta::firstOrNew([
+                        'articulo_id' => $articulo->id,
+                        'tipo_tarifa_id' => $tipoTarifaId
+                    ]);
+                    $tarifaVenta->precio_venta = $price;
+                    $tarifaVenta->save();
+                }
+            }
+
+            self::actualizarAlergenos($alergenos, $articulo);
 
             return response()->json(['message' => 'Producto actualizado exitosamente', 'articulo' => $articulo], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -293,6 +326,27 @@ class ArticuloController extends Controller
             return response()->json(['message' => 'Error al actualizar el producto', 'error' => $e->getMessage()], 500);
         }
     }
+
+    public function actualizarAlergenos($alergenos, Articulo $articulo)
+    {
+
+        // Filtrar los alérgenos eliminando cadenas vacías
+        $alergenos = array_filter($alergenos, function($alergeno) {
+            return $alergeno !== '';
+        });
+
+        // Obtener los IDs de los alérgenos basados en los nombres
+        $alergenoIds = Alergeno::whereIn('nombre', $alergenos)->pluck('id')->toArray();
+
+        // Eliminar los alérgenos actuales del artículo
+        $articulo->alergenos()->detach();
+
+        // Asociar los nuevos alérgenos
+        $articulo->alergenos()->attach($alergenoIds);
+
+        return response()->json(['success' => true, 'message' => 'Alérgenos actualizados correctamente.']);
+    }
+
 
 
     public function destroy($id)

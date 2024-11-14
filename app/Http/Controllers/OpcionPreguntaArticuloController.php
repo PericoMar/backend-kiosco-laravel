@@ -21,8 +21,10 @@ class OpcionPreguntaArticuloController extends Controller
             // Validar los datos de entrada
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'price' => 'required|numeric',
-                'img' => 'required|string', // Suponiendo que es la ruta de la imagen
+                'price_1' => 'required|numeric',
+                'price_2' => 'nullable|numeric',
+                'price_3' => 'nullable|numeric',
+                'img' => 'required|string',
                 'questionId' => 'required|integer',
                 'description' => 'nullable|string',
                 'status' => 'nullable|integer',
@@ -41,14 +43,22 @@ class OpcionPreguntaArticuloController extends Controller
             // Guardar el nuevo artículo en la base de datos
             $articulo->save();
 
-            // Guardar el precio en la tabla Tarifa_venta
-            $tarifaVenta = new TarifaVenta();
-            $tarifaVenta->precio_venta = $validatedData['price'];
-            $tarifaVenta->tipo_tarifa_id = 1; // Establece el tipo tarifa como 1
-            $tarifaVenta->articulo_id = $articulo->id; // Relaciona con el nuevo artículo
+            // Guardar los precios en la tabla Tarifa_venta
+            $prices = [
+                1 => $validatedData['price_1'],
+                2 => $validatedData['price_2'],
+                3 => $validatedData['price_3']
+            ];
 
-            // Guardar la tarifa en la base de datos
-            $tarifaVenta->save();
+            foreach ($prices as $tipoTarifaId => $price) {
+                if ($price !== null) { // Verificar que el precio no sea null
+                    $tarifaVenta = new TarifaVenta();
+                    $tarifaVenta->precio_venta = $price;
+                    $tarifaVenta->tipo_tarifa_id = $tipoTarifaId;
+                    $tarifaVenta->articulo_id = $articulo->id;
+                    $tarifaVenta->save();
+                }
+            }
 
             $opcion = new OpcionPreguntaArticulo();
             $opcion->pregunta_articulo_id = $validatedData['questionId'];
@@ -79,7 +89,9 @@ class OpcionPreguntaArticuloController extends Controller
             // Validar los datos de entrada
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'price' => 'required|numeric',
+                'price_1' => 'required|numeric',
+                'price_2' => 'nullable|numeric',
+                'price_3' => 'nullable|numeric',
                 'img' => 'required|string',
                 'questionId' => 'required|integer',
                 'description' => 'nullable|string',
@@ -101,15 +113,22 @@ class OpcionPreguntaArticuloController extends Controller
             // Guardar cambios en la base de datos
             $articulo->save();
 
-            // Actualizar o crear el precio en la tabla Tarifa_venta
-            $tarifaVenta = TarifaVenta::firstOrNew([
-                'articulo_id' => $articulo->id,
-                'tipo_tarifa_id' => 1
-            ]);
-            $tarifaVenta->precio_venta = $validatedData['price'];
-            
-            // Guardar la tarifa en la base de datos
-            $tarifaVenta->save();
+            $prices = [
+                1 => $validatedData['price_1'],
+                2 => $validatedData['price_2'],
+                3 => $validatedData['price_3']
+            ];
+
+            foreach ($prices as $tipoTarifaId => $price) {
+                if ($price !== null) { // Verificar que el precio no sea null
+                    $tarifaVenta = TarifaVenta::firstOrNew([
+                        'articulo_id' => $articulo->id,
+                        'tipo_tarifa_id' => $tipoTarifaId
+                    ]);
+                    $tarifaVenta->precio_venta = $price;
+                    $tarifaVenta->save();
+                }
+            }
 
             // Actualizar o crear la relación en OpcionPreguntaArticulo
             $opcion = OpcionPreguntaArticulo::firstOrNew([
