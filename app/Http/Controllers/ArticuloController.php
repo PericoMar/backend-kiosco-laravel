@@ -60,13 +60,19 @@ class ArticuloController extends Controller
                     })->map(function($option) {
                         // Busca el producto asociado
                         // Coger el producto con el id $option->id
+                        $alergenos = DB::table('Articulos_Alergenos')
+                            ->join('Alergenos', 'Articulos_Alergenos.alergeno_id', '=', 'Alergenos.id')
+                            ->where('Articulos_Alergenos.articulo_id', $option->articulo_id)
+                            ->pluck('Alergenos.nombre')
+                            ->toArray();
                         $modifier = DB::table('Articulos')->where('id', $option->articulo_id)->first();
                         $tarifa_venta = DB::table('Tarifa_Venta')->where('articulo_id', $option->articulo_id)->first();
                         return [
                             'id' => $option->id,
                             'value' => $modifier->articulo,
                             'img' => $modifier->imagen ?? null, // Si tiene una imagen, se asigna
-                            'price' => $option->suplemento ?? $tarifa_venta->precio_venta  // Si tiene un precio, se asigna
+                            'price' => $option->suplemento ?? $tarifa_venta->precio_venta,  // Si tiene un precio, se asigna
+                            'allergens' => $alergenos
                         ];
                     })->values()->toArray()
                 ];
@@ -216,14 +222,17 @@ class ArticuloController extends Controller
                 ]);
     
             case 'Modificador':
-                $modifier = Articulo::find($id);
-                if (!$modifier) {
+                $option = OpcionPreguntaArticulo::find($id);
+                if (!$option) {
                     return response()->json(['error' => 'Modificador no encontrado'], 404);
                 }
+
+                $modifier = Articulo::find($option->articulo_id);
+
     
                 // Obtener las tres primeras tarifas del modificador
                 $modifierTarifas = DB::table('Tarifa_venta')
-                    ->where('articulo_id', $id)
+                    ->where('articulo_id', $option->articulo_id)
                     ->orderBy('id')
                     ->take(3)
                     ->pluck('precio_venta')
@@ -232,20 +241,18 @@ class ArticuloController extends Controller
                 // Obtener alérgenos del modificador
                 $modifierAlergenos = DB::table('Articulos_Alergenos')
                     ->join('Alergenos', 'Articulos_Alergenos.alergeno_id', '=', 'Alergenos.id')
-                    ->where('Articulos_Alergenos.articulo_id', $id)
+                    ->where('Articulos_Alergenos.articulo_id', $option->articulo_id)
                     ->pluck('Alergenos.nombre')
                     ->toArray();
     
                 return response()->json([
                     'productType' => 'Modificador',
                     'name' => $modifier->articulo,
-                    'img' => $product->imagen,
+                    'img' => $modifier->imagen,
                     'price_1' => $modifierTarifas[0] ?? null,
                     'price_2' => $modifierTarifas[1] ?? null,
                     'price_3' => $modifierTarifas[2] ?? null,
-                    'family' => DB::table('Opciones_Preguntas_Articulo')
-                                  ->where('pregunta_articulo_id', $id)
-                                  ->value('articulo_id'),
+                    'family' => $option->pregunta_articulo_id,
                     'status' => $modifier->estado ? 'Habilitado' : 'Deshabilitado',
                     'descripcion' => $modifier->descripcion,
                     'min' => null,
@@ -280,7 +287,7 @@ class ArticuloController extends Controller
             // Encontrar el artículo existente
             $articulo = Articulo::findOrFail($id);
 
-            
+
 
             // Actualizar los datos del artículo
             $articulo->articulo = $validatedData['name'];

@@ -6,6 +6,7 @@ use App\Models\OpcionPreguntaArticulo;
 use App\Models\Articulo;
 use App\Models\TarifaVenta;
 use Illuminate\Http\Request;
+use App\Models\Alergeno;
 
 class OpcionPreguntaArticuloController extends Controller
 {
@@ -93,8 +94,13 @@ class OpcionPreguntaArticuloController extends Controller
                 'questionId' => 'required|integer',
                 'description' => 'nullable|string',
                 'status' => 'nullable|integer',
-                'iva' => 'required|integer'
+                'iva' => 'required|integer',
+                'allergens' => 'nullable|array'
             ]);
+
+            $id = OpcionPreguntaArticulo::findOrFail($id)->articulo_id;
+
+            $alergenos = $validatedData['allergens'] ?? [];
 
             // Encontrar el artículo existente
             $articulo = Articulo::findOrFail($id);
@@ -106,6 +112,8 @@ class OpcionPreguntaArticuloController extends Controller
             $articulo->visible_TPV = true;
             $articulo->tipo_iva_id = $validatedData['iva'];
             
+            self::actualizarAlergenos($alergenos, $articulo);
+
             // Guardar cambios en la base de datos
             $articulo->save();
 
@@ -144,6 +152,26 @@ class OpcionPreguntaArticuloController extends Controller
             // Manejar cualquier otro error
             return response()->json(['message' => 'Error al actualizar el producto', 'error' => $e->getMessage()], 500);
         }
+    }
+
+    public function actualizarAlergenos($alergenos, Articulo $articulo)
+    {
+
+        // Filtrar los alérgenos eliminando cadenas vacías
+        $alergenos = array_filter($alergenos, function($alergeno) {
+            return $alergeno !== '';
+        });
+
+        // Obtener los IDs de los alérgenos basados en los nombres
+        $alergenoIds = Alergeno::whereIn('nombre', $alergenos)->pluck('id')->toArray();
+
+        // Eliminar los alérgenos actuales del artículo
+        $articulo->alergenos()->detach();
+
+        // Asociar los nuevos alérgenos
+        $articulo->alergenos()->attach($alergenoIds);
+
+        return response()->json(['success' => true, 'message' => 'Alérgenos actualizados correctamente.']);
     }
 
 
