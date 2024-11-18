@@ -280,6 +280,8 @@ class ArticuloController extends Controller
             // Encontrar el artículo existente
             $articulo = Articulo::findOrFail($id);
 
+            
+
             // Actualizar los datos del artículo
             $articulo->articulo = $validatedData['name'];
             $articulo->familia_id = $validatedData['familyId'];

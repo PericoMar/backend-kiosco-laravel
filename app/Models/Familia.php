@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Familia extends Model
 {
@@ -23,6 +24,12 @@ class Familia extends Model
 
     public static function getFamilies()
     {
-        return self::select('id', 'codigo as name', 'imagen as img')->get()->toArray();
+        return self::select(
+            'id',
+            'codigo as name',
+            DB::raw("CONCAT('" . env('APP_URL') . "', imagen) as img"),
+            'descripcion as desc'
+        )->get()->toArray();
+        
     }
 }

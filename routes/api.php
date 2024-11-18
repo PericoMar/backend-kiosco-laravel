@@ -11,6 +11,7 @@ use App\Http\Controllers\ImageController;
 
 Route::get('familias', [FamiliaController::class, 'index']);
 Route::post('familia', [FamiliaController::class, 'store']);
+Route::get('familia/{id}', [FamiliaController::class, 'show']);
 Route::put('familia/{id}', [FamiliaController::class, 'update']);
 Route::delete('familia/{id}', [FamiliaController::class, 'destroy']);
 
