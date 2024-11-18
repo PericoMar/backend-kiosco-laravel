@@ -70,7 +70,7 @@ class ArticuloController extends Controller
                         return [
                             'id' => $option->id,
                             'value' => $modifier->articulo,
-                            'img' => $modifier->imagen ?? null, // Si tiene una imagen, se asigna
+                            'img' => $modifier->imagen ? env('APP_URL') . $modifier->imagen : null, // Si tiene una imagen, se asigna
                             'price' => $option->suplemento ?? $tarifa_venta->precio_venta,  // Si tiene un precio, se asigna
                             'allergens' => $alergenos
                         ];
