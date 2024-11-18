@@ -29,7 +29,6 @@ class ArticuloController extends Controller
             ->get();
 
         
-        Log::info('Productos: ' . $products);
 
         $questions = DB::table('Preguntas_Articulo')->get();
 
@@ -52,7 +51,7 @@ class ArticuloController extends Controller
                     'id' => $question->id,
                     'name' => $question->texto,
                     'questionType' => $question->tipo_pregunta ?? "single",
-                    'status' => $question->estado ? 'Habilitado' : 'Deshabilitado',
+                    'status' => $question->estado == 1 ? 'Habilitado' : 'Deshabilitado',
                     'maxChoices' => $question->unidades_maximas,
                     'minChoices' => $question->unidades_minimas,
                     'options' => $options->filter(function($option) use ($question) {
@@ -80,7 +79,7 @@ class ArticuloController extends Controller
                 'status' => $product->estado ? 'Habilitado' : 'Deshabilitado',
                 'taxes' => $product->impuestos ?? 0,
                 'allergens' => $alergenos,
-                'img' => $product->imagen ?? null,
+                'img' => $product->imagen ? env('APP_URL') . $product->imagen : null,
                 'familyId' => $product->familia_id,
                 'description' => $product->descripcion,
                 'customizationQuestions' => $customizationQuestions->values()->toArray()
@@ -106,7 +105,6 @@ class ArticuloController extends Controller
                 'price_1' => 'required|numeric',
                 'price_2' => 'nullable|numeric',
                 'price_3' => 'nullable|numeric',
-                'img' => 'required|string',
                 'familyId' => 'required|integer',
                 'description' => 'nullable|string',
                 'status' => 'required|integer',
@@ -118,8 +116,7 @@ class ArticuloController extends Controller
             $articulo->articulo = $validatedData['name'];
             $articulo->familia_id = $validatedData['familyId'];
             $articulo->descripcion = $validatedData['description'];
-            $articulo->imagen = $validatedData['img'];
-            $articulo->estado = $validatedData['status'] == 'Habilitado' ? 1 : 0;
+            $articulo->estado = $validatedData['status'];
             $articulo->visible_TPV = true; 
             $articulo->tipo_iva_id = $validatedData['iva'];
 
@@ -269,11 +266,10 @@ class ArticuloController extends Controller
         try {
             // Validar los datos de entrada
             $validatedData = $request->validate([
-                'name' => 'required|string|max:255',
-                'price_1' => 'required|numeric',
+                'name' => 'nullable|string|max:255',
+                'price_1' => 'nullable|numeric',
                 'price_2' => 'nullable|numeric',
                 'price_3' => 'nullable|numeric',
-                'img' => 'required|string',
                 'familyId' => 'required|integer',
                 'description' => 'nullable|string',
                 'status' => 'required|integer',
@@ -288,8 +284,7 @@ class ArticuloController extends Controller
             $articulo->articulo = $validatedData['name'];
             $articulo->familia_id = $validatedData['familyId'];
             $articulo->descripcion = $validatedData['description'];
-            $articulo->imagen = $validatedData['img'];
-            $articulo->estado = $validatedData['status'] == 'Habilitado' ? 1 : 0;
+            $articulo->estado = $validatedData['status'];
             $articulo->visible_TPV = true;
             $articulo->tipo_iva_id = $validatedData['iva'];
             $alergenos = $validatedData['allergens'] ?? [];
@@ -353,6 +348,10 @@ class ArticuloController extends Controller
     {
         $articulo = Articulo::findOrFail($id);
         $articulo->delete();
+
+        // Eliminar las tarifas de venta asociadas al artículo
+        TarifaVenta::where('articulo_id', $id)->delete();
+
         return response()->json(null, 204);
     }
 }

@@ -21,20 +21,18 @@ class FamiliaController extends Controller
             // Validar los datos de entrada
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
-                'img' => 'required|string', // Suponiendo que es la ruta de la imagen
             ]);
 
 
             $familia = new Familia();
             $familia->codigo = $validatedData['name'];
-            $familia->imagen = $validatedData['img'];
             $familia->estado = 0; // O lo que consideres necesario
             $familia->visible_TPV = true; // O false, según sea necesario
 
             // Guardar el nuevo artículo en la base de datos
             $familia->save();
 
-            return response()->json(['message' => 'Producto creado exitosamente', 'articulo' => $familia], 201);
+            return response()->json(['message' => 'Producto creado exitosamente', 'familia' => $familia], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Manejar errores de validación
             return response()->json(['message' => 'Error de validación', 'errors' => $e->validator->errors()], 422);

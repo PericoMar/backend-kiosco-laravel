@@ -11,7 +11,7 @@ class CreateOpcionesPreguntasArticuloTable extends Migration
         Schema::create('opciones_preguntas_articulo', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('pregunta_articulo_id');
-            $table->integer('orden');
+            $table->integer('orden')->nullable();
             $table->unsignedBigInteger('articulo_id');
             $table->decimal('suplemento', 8, 2)->nullable(); // Manejo de suplemento como decimal
             $table->timestamps();
