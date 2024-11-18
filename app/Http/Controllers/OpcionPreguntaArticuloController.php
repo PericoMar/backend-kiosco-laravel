@@ -24,7 +24,6 @@ class OpcionPreguntaArticuloController extends Controller
                 'price_1' => 'required|numeric',
                 'price_2' => 'nullable|numeric',
                 'price_3' => 'nullable|numeric',
-                'img' => 'required|string',
                 'questionId' => 'required|integer',
                 'description' => 'nullable|string',
                 'status' => 'nullable|integer',
@@ -35,7 +34,6 @@ class OpcionPreguntaArticuloController extends Controller
             $articulo = new Articulo();
             $articulo->articulo = $validatedData['name'];
             $articulo->descripcion = $validatedData['description'];
-            $articulo->imagen = $validatedData['img'];
             $articulo->estado = $validatedData['status'];
             $articulo->visible_TPV = true;
             $articulo->tipo_iva_id = $validatedData['iva'];
@@ -92,7 +90,6 @@ class OpcionPreguntaArticuloController extends Controller
                 'price_1' => 'required|numeric',
                 'price_2' => 'nullable|numeric',
                 'price_3' => 'nullable|numeric',
-                'img' => 'required|string',
                 'questionId' => 'required|integer',
                 'description' => 'nullable|string',
                 'status' => 'nullable|integer',
@@ -105,7 +102,6 @@ class OpcionPreguntaArticuloController extends Controller
             // Actualizar los datos del artículo
             $articulo->articulo = $validatedData['name'];
             $articulo->descripcion = $validatedData['description'];
-            $articulo->imagen = $validatedData['img'];
             $articulo->estado = $validatedData['status'];
             $articulo->visible_TPV = true;
             $articulo->tipo_iva_id = $validatedData['iva'];

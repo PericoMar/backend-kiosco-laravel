@@ -18,6 +18,45 @@ class PreguntaArticuloController extends Controller
             ];
         });
         return response()->json($preguntas);
+    }   
+
+    public function store(Request $request)
+    {
+        try {
+            // Validar los datos de entrada
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'productId' => 'required|integer',
+                'questionType' => 'required|string|max:255',
+                'description' => 'nullable|string|max:255',
+                'status' => 'nullable|integer',
+                'max' => 'nullable|integer',
+                'min' => 'nullable|integer'
+            ]);
+
+            // Buscar la pregunta existente
+            $pregunta = new PreguntaArticulo;
+
+            // Actualizar los datos de la pregunta
+            $pregunta->texto = $validatedData['name'];
+            $pregunta->articulo_id = $validatedData['productId'];
+            $pregunta->tipo_pregunta = $validatedData['questionType'];
+            $pregunta->descripcion = $validatedData['description'];
+            $pregunta->estado = $validatedData['status'];
+            $pregunta->unidades_maximas = $validatedData['max'];
+            $pregunta->unidades_minimas = $validatedData['min'];
+
+            // Guardar cambios en la base de datos
+            $pregunta->save();
+
+            return response()->json(['message' => 'Pregunta actualizada exitosamente', 'pregunta' => $pregunta], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Manejar errores de validación
+            return response()->json(['message' => 'Error de validación', 'errors' => $e->validator->errors()], 422);
+        } catch (\Exception $e) {
+            // Manejar cualquier otro error
+            return response()->json(['message' => 'Error al actualizar la pregunta', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function update(Request $request, $id)
