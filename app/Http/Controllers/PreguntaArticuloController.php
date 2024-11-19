@@ -40,7 +40,7 @@ class PreguntaArticuloController extends Controller
             // Actualizar los datos de la pregunta
             $pregunta->texto = $validatedData['name'];
             $pregunta->articulo_id = $validatedData['productId'];
-            $pregunta->tipo_pregunta = $validatedData['questionType'];
+            $pregunta->tipo_pregunta = 'multiple';
             $pregunta->descripcion = $validatedData['description'];
             $pregunta->estado = $validatedData['status'];
             $pregunta->unidades_maximas = $validatedData['max'];

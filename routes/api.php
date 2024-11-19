@@ -27,6 +27,7 @@ Route::put('pregunta/{id}', [PreguntaArticuloController::class, 'update']);
 
 Route::post('opcion', [OpcionPreguntaArticuloController::class, 'store']);
 Route::put('opcion/{id}', [OpcionPreguntaArticuloController::class, 'update']);
+Route::delete('opcion/{id}', [OpcionPreguntaArticuloController::class, 'destroy']);
 
 Route::post('/upload-image/{tableName}/{recordId}/{columnName}', [ImageController::class, 'uploadImage']);
 
