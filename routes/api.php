@@ -34,3 +34,5 @@ Route::post('/upload-image/{tableName}/{recordId}/{columnName}', [ImageControlle
 Route::get('print-receipt', [PrintController::class, 'printReceipt']);
 
 Route::post('print-receipt-text', [PrintController::class, 'printReceiptPlainText']);
+
+Route::post('payment', [PrintController::class, 'payment']);

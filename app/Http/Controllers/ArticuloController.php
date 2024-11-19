@@ -28,7 +28,6 @@ class ArticuloController extends Controller
             })
             ->get();
 
-        
 
         $questions = DB::table('Preguntas_Articulo')->get();
 
@@ -45,6 +44,8 @@ class ArticuloController extends Controller
                 ->where('Articulos_Alergenos.articulo_id', $product->id)
                 ->pluck('Alergenos.nombre')
                 ->toArray();
+
+            $iva = DB::table('Tipos_Iva')->where('id', $product->tipo_iva_id)->value('iva_porcentaje') ?? 0;
             // Preguntas y opciones correspondientes al artículo
             $customizationQuestions = $filteredQuestions->map(function($question) use ($options) {
                 return [
@@ -83,7 +84,7 @@ class ArticuloController extends Controller
                 'name' => $product->articulo,
                 'price' => $product->precio,
                 'status' => $product->estado ? 'Habilitado' : 'Deshabilitado',
-                'taxes' => $product->impuestos ?? 0,
+                'taxes' => $iva,
                 'allergens' => $alergenos,
                 'img' => $product->imagen ? env('APP_URL') . $product->imagen : null,
                 'familyId' => $product->familia_id,
