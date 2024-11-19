@@ -16,6 +16,7 @@ class PaymentController extends Controller
         $order = $request->input('order');
 
         $amount = 1000; // 10.00 EUR
+        $order = 'ORD-123456';
 
         $paymentIntent = $this->createPaymentIntent($amount, $order);
 
@@ -29,7 +30,7 @@ class PaymentController extends Controller
 
         $paymentIntentId = $paymentIntent['id'];
 
-        $response = $this->unlinkedRefund('', $paymentIntentId);
+        $response = $this->unlinkedRefund('tm_sandbox_673cb07e31038ac820817c18', $paymentIntentId);
 
         return response()->json($response);
     }

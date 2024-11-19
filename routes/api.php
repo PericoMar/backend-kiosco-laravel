@@ -8,6 +8,7 @@ use App\Http\Controllers\PrintController;
 use App\Http\Controllers\PreguntaArticuloController;
 use App\Http\Controllers\OpcionPreguntaArticuloController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('familias', [FamiliaController::class, 'index']);
 Route::post('familia', [FamiliaController::class, 'store']);
@@ -35,4 +36,4 @@ Route::get('print-receipt', [PrintController::class, 'printReceipt']);
 
 Route::post('print-receipt-text', [PrintController::class, 'printReceiptPlainText']);
 
-Route::post('payment', [PrintController::class, 'payment']);
+Route::post('payment', [PaymentController::class, 'payment']);
