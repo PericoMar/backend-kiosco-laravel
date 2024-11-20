@@ -12,6 +12,16 @@ class PaymentController extends Controller
 {
     public string $resellerId = 'SC949F78';
     public string $softwareHouseId = 'SC949F78';
+    // VCMKONCSIP0MA - tm_sandbox_673cb09aa673538c27f3dea2 - simulates a successful chip and pin payment. (Simula un pago satisfactorio con Chip y Pin) ✅
+    // VCMKONCDIP0VA - tm_sandbox_673cb0b0f6eaab0d89c10291 - simulates a declined chip and pin payment. (Simula la negación del pago con chip y pin) ✅
+    // VCMKONCSCP0MA - tm_sandbox_673cb0ddf6eaab0d89c10297 - simulates a contactless payment with device verification. (Simula en pago con contactless) ✅
+    // VCMKONCSIS0VA - tm_sandbox_673cb0f1f6eaab0d89c1029e - simulates a signature payment. (Simula el pago con intento de firma) ✅
+    // VCMKONCVIP0VA - tm_sandbox_673cb10831038ac820817c23 - simulates an unsuccessful payment result.(Simula un pago NO satisfactorio) ✅ NO Satisfactorio porque se expira el pago.
+    // VCMKONCTIP0MA - tm_sandbox_673cb12131038ac820817c26 - simulates a "TIMED_OUT" payment result. (Simula un Time Out) ✅
+    // VCMKONCCIP0MA - tm_sandbox_673cb136a673538c27f3deb0 - simulates a "CANCELED" payment result. (Simula una cancelación del proceso).
+    // Terminal fisico tm_sandbox_673cb07e31038ac820817c18
+
+    public string $terminalId = 'tm_sandbox_673cb0f1f6eaab0d89c1029e';
 
     public function payment(Request $request){
         $amount = $request->input('amount');
@@ -33,7 +43,7 @@ class PaymentController extends Controller
 
         $paymentIntentId = $paymentIntent['id'];
 
-        $response = $this->createTerminalSession('tm_sandbox_673cb07e31038ac820817c18', $paymentIntentId);
+        $response = $this->createTerminalSession($this->terminalId, $paymentIntentId);
 
         return response()->json($response);
     }
