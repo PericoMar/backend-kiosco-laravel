@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -13,9 +14,11 @@ class PaymentController extends Controller
     public string $softwareHouseId = 'SC949F78';
 
     public function payment(Request $request){
-        $order = $request->input('order');
+        $amount = $request->input('amount');
+        Log::info('Amount: ' . $amount);
+        Log::info('Request: ' . json_encode($request->all()));
 
-        $amount = 1000; // 10.00 EUR
+        $amount = $amount * 100;
         $order = 'ORD-123456';
 
         $paymentIntent = $this->createPaymentIntent($amount, $order);
@@ -30,7 +33,7 @@ class PaymentController extends Controller
 
         $paymentIntentId = $paymentIntent['id'];
 
-        $response = $this->unlinkedRefund('tm_sandbox_673cb07e31038ac820817c18', $paymentIntentId);
+        $response = $this->createTerminalSession('tm_sandbox_673cb07e31038ac820817c18', $paymentIntentId);
 
         return response()->json($response);
     }
@@ -164,7 +167,7 @@ class PaymentController extends Controller
         $body = [
             'terminalId' => $terminalId,
             'details' => [
-                'matchedRefund' => [
+                'sale' => [
                     'paymentIntentId' => $paymentIntentId,
                 ],
                 'sessionType' => 'Sale',
@@ -177,8 +180,10 @@ class PaymentController extends Controller
             'Authorization' => 'Basic ' . env('DOJO_API_KEY'),
             'reseller-id' => $resellerId,
             'software-house-id' => $softwareHouseId,
-            'Content-Type' => 'application/json',
         ];
+
+        Log::info('Creating terminal session with body: ' . json_encode($body));
+        Log::info('Headers: ' . json_encode($headers));
 
         // Realizar la solicitud POST
         $response = Http::withHeaders($headers)->post($url, $body);
@@ -239,8 +244,8 @@ class PaymentController extends Controller
         }
     }
 
-    public function getTerminalSession($terminalId){
-        $url = 'https://api.dojo.tech/terminal-sessions/' . $terminalId;
+    public function getTerminalSession($terminalSessionId){
+        $url = 'https://api.dojo.tech/terminal-sessions/' . $terminalSessionId;
 
         $headers = [
             'Version' => '2024-02-05',
@@ -251,14 +256,7 @@ class PaymentController extends Controller
 
         $response = Http::withHeaders($headers)->get($url);
 
-        if ($response->successful()) {
-            return $response->json();
-        } else {
-            return [
-                'status' => $response->status(),
-                'error' => $response->body(),
-            ];
-        }
+        return $response->json();
     }
 
     // CANCEL

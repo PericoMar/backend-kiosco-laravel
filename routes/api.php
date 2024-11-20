@@ -37,3 +37,5 @@ Route::get('print-receipt', [PrintController::class, 'printReceipt']);
 Route::post('print-receipt-text', [PrintController::class, 'printReceiptPlainText']);
 
 Route::post('payment', [PaymentController::class, 'payment']);
+Route::get('payment/status/{terminalSessionId}', [PaymentController::class, 'getTerminalSession']);
+Route::post('payment/cancel', [PaymentController::class, 'cancelPayment']);
