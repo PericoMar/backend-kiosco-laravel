@@ -21,7 +21,7 @@ class PaymentController extends Controller
     // VCMKONCCIP0MA - tm_sandbox_673cb136a673538c27f3deb0 - simulates a "CANCELED" payment result. (Simula una cancelación del proceso).
     // Terminal fisico tm_sandbox_673cb07e31038ac820817c18
 
-    public string $terminalId = 'tm_sandbox_673cb0f1f6eaab0d89c1029e';
+    public string $terminalId = 'tm_sandbox_673cb07e31038ac820817c18';
 
     public function payment(Request $request){
         $amount = $request->input('amount');
