@@ -20,7 +20,7 @@ class ImageController extends Controller
     public function uploadImage(Request $request, string $tableName, int $recordId, string $columnName)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Reglas de validación
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp,jfif|max:2048', // Reglas de validación
         ]);
 
         // Verificar que la columna existe en la tabla

@@ -9,11 +9,20 @@ use Illuminate\Support\Facades\Log;
 
 class FamiliaController extends Controller
 {
+
     public function index(): JsonResponse
     {
-        $families = Familia::getFamilies();
+        $families = Familia::getFamilies()->map(function ($family) {
+            return [
+                'name' => $family->codigo,
+                'status' => $family->estado,
+                'desc' => $family->descripcion,
+            ];
+        });
+
         return response()->json($families);
     }
+
 
     public function store(Request $request)
     {
