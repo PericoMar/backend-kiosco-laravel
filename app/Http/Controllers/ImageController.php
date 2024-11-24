@@ -23,12 +23,21 @@ class ImageController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp,jfif|max:2048', // Reglas de validación
         ]);
 
+
         // Verificar que la columna existe en la tabla
         if (!\Schema::hasColumn($tableName, $columnName)) {
             return response()->json([
                 'success' => false,
                 'message' => "La columna '$columnName' no existe en la tabla '$tableName'.",
             ], 400);
+        }
+
+        // Si no existe un registro con el ID proporcionado, devolver un error
+        if (!DB::table($tableName)->where('id', $recordId)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => "No se encontró ningún registro con el ID '$recordId' en la tabla '$tableName'.",
+            ], 404);
         }
 
         // Obtener la URL actual de la imagen desde la base de datos

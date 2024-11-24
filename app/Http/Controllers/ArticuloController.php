@@ -322,7 +322,7 @@ class ArticuloController extends Controller
 
             self::actualizarAlergenos($alergenos, $articulo);
 
-            return response()->json(['message' => 'Producto actualizado exitosamente', 'articulo' => $articulo], 200);
+            return response()->json(['message' => 'Producto actualizado exitosamente', 'id' => $articulo->id], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Manejar errores de validación
             return response()->json(['message' => 'Error de validación', 'errors' => $e->validator->errors()], 422);

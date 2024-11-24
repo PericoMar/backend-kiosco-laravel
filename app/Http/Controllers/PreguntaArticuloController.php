@@ -49,7 +49,7 @@ class PreguntaArticuloController extends Controller
             // Guardar cambios en la base de datos
             $pregunta->save();
 
-            return response()->json(['message' => 'Pregunta actualizada exitosamente', 'pregunta' => $pregunta], 200);
+            return response()->json(['message' => 'Pregunta actualizada exitosamente', 'id' => $pregunta->id], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Manejar errores de validación
             return response()->json(['message' => 'Error de validación', 'errors' => $e->validator->errors()], 422);

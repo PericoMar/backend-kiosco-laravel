@@ -12,14 +12,8 @@ class FamiliaController extends Controller
 
     public function index(): JsonResponse
     {
-        $families = Familia::getFamilies()->map(function ($family) {
-            return [
-                'name' => $family->codigo,
-                'status' => $family->estado,
-                'desc' => $family->descripcion,
-            ];
-        });
-
+        // Este metodo ya cambia los nombres a los mismos que el front espera
+        $families = Familia::getFamilies();
         return response()->json($families);
     }
 

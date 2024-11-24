@@ -10,6 +10,8 @@ use App\Models\Alergeno;
 
 class OpcionPreguntaArticuloController extends Controller
 {
+
+
     public function index()
     {
         $opciones = OpcionPreguntaArticulo::all();
@@ -144,7 +146,7 @@ class OpcionPreguntaArticuloController extends Controller
             // Guardar la opción en la base de datos
             $opcion->save();
 
-            return response()->json(['message' => 'Producto actualizado exitosamente', 'articulo' => $articulo], 200);
+            return response()->json(['message' => 'Modificador actualizado exitosamente', 'id' => $articulo->id], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Manejar errores de validación
             return response()->json(['message' => 'Error de validación', 'errors' => $e->validator->errors()], 422);
