@@ -21,7 +21,7 @@ class PaymentController extends Controller
     // VCMKONCCIP0MA - tm_sandbox_673cb136a673538c27f3deb0 - simulates a "CANCELED" payment result. (Simula una cancelación del proceso).
     // Terminal fisico tm_sandbox_673cb07e31038ac820817c18
 
-    public string $terminalId = 'tm_sandbox_673cb07e31038ac820817c18';
+    public string $terminalId = 'tm_sandbox_673cb0f1f6eaab0d89c1029e';
 
     public function payment(Request $request){
         $amount = $request->input('amount');
@@ -46,7 +46,7 @@ class PaymentController extends Controller
         $response = $this->createTerminalSession($this->terminalId, $paymentIntentId);
 
         return response()->json($response);
-    }
+    }   
 
 
     // PAYMENT INTENTS
@@ -271,8 +271,8 @@ class PaymentController extends Controller
 
     // CANCEL
 
-    public function cancel($terminalSession){
-        $url = 'https://api.dojo.tech/terminal-sessions/' . $terminalSession . '/cancel';
+    public function cancelPayment($terminalSessionId){
+        $url = 'https://api.dojo.tech/terminal-sessions/' . $terminalSessionId . '/cancel';
 
         $headers = [
             'Version' => '2024-02-05',
@@ -296,7 +296,9 @@ class PaymentController extends Controller
 
     // SIGNATURE
 
-    public function signatureVerification($terminalSession, $accepted){
+    public function signatureVerification(Request $request, $terminalSession){
+        $accepted = $request->input('accepted');
+
         $url = 'https://api.dojo.tech/terminal-sessions/' . $terminalSession . '/signature';
 
         $headers = [
