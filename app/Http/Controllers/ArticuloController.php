@@ -72,7 +72,7 @@ class ArticuloController extends Controller
                             'id' => $option->id,
                             'value' => $modifier->articulo,
                             'img' => $modifier->imagen ? env('APP_URL') . $modifier->imagen : null, // Si tiene una imagen, se asigna
-                            'price' => $option->suplemento ?? $tarifa_venta->precio_venta,  // Si tiene un precio, se asigna
+                            'prices' => [$option->suplemento ?? $tarifa_venta->precio_venta],  // Si tiene un precio, se asigna
                             'allergens' => $alergenos
                         ];
                     })->values()->toArray()
@@ -82,7 +82,7 @@ class ArticuloController extends Controller
             return [
                 'id' => $product->id,
                 'name' => $product->articulo,
-                'price' => $product->precio,
+                'prices' => [$product->precio],
                 'status' => $product->estado ? 'Habilitado' : 'Deshabilitado',
                 'taxes' => $iva,
                 'allergens' => $alergenos,

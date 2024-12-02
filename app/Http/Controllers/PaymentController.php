@@ -70,7 +70,7 @@ class PaymentController extends Controller
 
         // Encabezados de la solicitud
         $headers = [
-            'Version' => '2024-02-05',
+            'Version' => env('DOJO_API_VERSION'),
             'Authorization' => 'Basic ' . env('DOJO_API_KEY'),
         ];
 
@@ -96,7 +96,7 @@ class PaymentController extends Controller
 
         // Encabezados de la solicitud
         $headers = [
-            'Version' => '2024-02-05',
+            'Version' => env('DOJO_API_VERSION'),
             'Authorization' => 'Basic ' . env('DOJO_API_KEY'),
             'reseller-id' => $this->resellerId,
             'software-house-id' => $this->softwareHouseId,
@@ -124,7 +124,7 @@ class PaymentController extends Controller
         $url = 'https://api.dojo.tech/terminals';
 
         $headers = [
-            'Version' => '2024-02-05',
+            'Version' => env('DOJO_API_VERSION'),
             'Authorization' => 'Basic ' . env('DOJO_API_KEY'),
             'reseller-id' => $this->resellerId,
             'software-house-id' => $this->softwareHouseId,
@@ -146,7 +146,7 @@ class PaymentController extends Controller
         $url = 'https://api.dojo.tech/terminals/' . $terminalId;
 
         $headers = [
-            'Version' => '2024-02-05',
+            'Version' => env('DOJO_API_VERSION'),
             'Authorization' => 'Basic ' . env('DOJO_API_KEY'),
             'reseller-id' => $this->resellerId,
             'software-house-id' => $this->softwareHouseId,
@@ -186,7 +186,7 @@ class PaymentController extends Controller
 
         // Encabezados de la solicitud
         $headers = [
-            'Version' => '2024-02-05',
+            'Version' => env('DOJO_API_VERSION'),
             'Authorization' => 'Basic ' . env('DOJO_API_KEY'),
             'reseller-id' => $resellerId,
             'software-house-id' => $softwareHouseId,
@@ -231,7 +231,7 @@ class PaymentController extends Controller
 
         // Encabezados de la solicitud
         $headers = [
-            'Version' => '2024-02-05',
+            'Version' => env('DOJO_API_VERSION'),
             'Authorization' => 'Basic ' . env('DOJO_API_KEY'),
             'reseller-id' => $this->resellerId,
             'software-house-id' => $this->softwareHouseId,
@@ -258,7 +258,7 @@ class PaymentController extends Controller
         $url = 'https://api.dojo.tech/terminal-sessions/' . $terminalSessionId;
 
         $headers = [
-            'Version' => '2024-02-05',
+            'Version' => env('DOJO_API_VERSION'),
             'Authorization' => 'Basic ' . env('DOJO_API_KEY'),
             'reseller-id' => $this->resellerId,
             'software-house-id' => $this->softwareHouseId,
@@ -275,7 +275,7 @@ class PaymentController extends Controller
         $url = 'https://api.dojo.tech/terminal-sessions/' . $terminalSessionId . '/cancel';
 
         $headers = [
-            'Version' => '2024-02-05',
+            'Version' => env('DOJO_API_VERSION'),
             'Authorization' => 'Basic ' . env('DOJO_API_KEY'),
             'reseller-id' => $this->resellerId,
             'software-house-id' => $this->softwareHouseId,
@@ -302,7 +302,7 @@ class PaymentController extends Controller
         $url = 'https://api.dojo.tech/terminal-sessions/' . $terminalSession . '/signature';
 
         $headers = [
-            'Version' => '2024-02-05',
+            'Version' =>  env('DOJO_API_VERSION'),
             'Authorization' => 'Basic ' . env('DOJO_API_KEY'),
             'reseller-id' => $this->resellerId,
             'software-house-id' => $this->softwareHouseId,
