@@ -32,7 +32,7 @@ Route::delete('opcion/{id}', [OpcionPreguntaArticuloController::class, 'destroy'
 
 Route::post('/upload-image/{tableName}/{recordId}/{columnName}', [ImageController::class, 'uploadImage']);
 
-Route::get('print-receipt', [PrintController::class, 'printReceipt']);
+Route::post('print-receipt', [PrintController::class, 'printPDF']); 
 
 Route::post('print-receipt-text', [PrintController::class, 'printReceiptPlainText']);
 
