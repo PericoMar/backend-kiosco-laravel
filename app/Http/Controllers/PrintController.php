@@ -33,6 +33,8 @@ class PrintController extends Controller
         // Recoger la ruta del archivo PDF
         $filePath = $this->generarPDF($id, $paymentMethod, $consumptionOption, $total, $items);
 
+        return response()->json(['success' => true, 'pdf_path' => $filePath]);
+
         // Calcular el tiempo que tardó en generar el PDF
         $pdfGenerationTime = microtime(true) - $startTime;
 
@@ -120,7 +122,7 @@ class PrintController extends Controller
         // Crear nuevo documento PDF
         $pdf = new \FPDF('P', 'mm', array(80, 200));
         $pdf->AddPage();
-        $pdf->SetMargins(5, 5, 5);
+        $pdf->SetMargins(1, 1, 1);
         $pdf->SetFont('Arial', 'B', 9);
 
         $logoPath = public_path('storage/logos/logo_18.png');
