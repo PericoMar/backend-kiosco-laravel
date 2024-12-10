@@ -25,6 +25,7 @@ Route::get('articulo/{productType}/{id}', [ArticuloController::class, 'show']);
 Route::get('preguntas', [PreguntaArticuloController::class, 'index']);
 Route::post('pregunta', [PreguntaArticuloController::class, 'store']);
 Route::put('pregunta/{id}', [PreguntaArticuloController::class, 'update']);
+Route::delete('pregunta/{id}', [PreguntaArticuloController::class, 'destroy']);
 
 Route::post('opcion', [OpcionPreguntaArticuloController::class, 'store']);
 Route::put('opcion/{id}', [OpcionPreguntaArticuloController::class, 'update']);

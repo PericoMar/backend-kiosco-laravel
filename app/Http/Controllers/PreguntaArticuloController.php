@@ -109,6 +109,6 @@ class PreguntaArticuloController extends Controller
     {
         $pregunta = PreguntaArticulo::findOrFail($id);
         $pregunta->delete();
-       
+        return response()->json(null, 204);
     }
 }
