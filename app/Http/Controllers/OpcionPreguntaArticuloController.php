@@ -7,6 +7,7 @@ use App\Models\Articulo;
 use App\Models\TarifaVenta;
 use Illuminate\Http\Request;
 use App\Models\Alergeno;
+use Illuminate\Support\Facades\Log;
 
 class OpcionPreguntaArticuloController extends Controller
 {
@@ -44,6 +45,8 @@ class OpcionPreguntaArticuloController extends Controller
             // Guardar el nuevo artículo en la base de datos
             $articulo->save();
 
+            self::actualizarAlergenos($validatedData['allergens'] ?? [], $articulo);
+
             // Guardar los precios en la tabla Tarifa_venta
             $prices = [
                 1 => $validatedData['price_1'],
@@ -68,7 +71,7 @@ class OpcionPreguntaArticuloController extends Controller
 
             $opcion->save();
 
-            return response()->json(['message' => 'Producto creado exitosamente', 'articulo' => $articulo], 201);
+            return response()->json(['message' => 'Producto creado exitosamente', 'articulo' => $articulo, 'opcion' => $opcion], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Manejar errores de validación
             return response()->json(['message' => 'Error de validación', 'errors' => $e->validator->errors()], 422);
@@ -170,6 +173,8 @@ class OpcionPreguntaArticuloController extends Controller
         // Eliminar los alérgenos actuales del artículo
         $articulo->alergenos()->detach();
 
+        Log::info($alergenoIds);
+
         // Asociar los nuevos alérgenos
         $articulo->alergenos()->attach($alergenoIds);
 
@@ -181,6 +186,9 @@ class OpcionPreguntaArticuloController extends Controller
     {
         $opcion = OpcionPreguntaArticulo::findOrFail($id);
         $opcion->delete();
+
+        Articulo::destroy($opcion->articulo_id);
+
         return response()->json(null, 204);
     }
 }

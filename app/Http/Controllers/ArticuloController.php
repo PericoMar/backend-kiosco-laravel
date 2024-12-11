@@ -146,6 +146,7 @@ class ArticuloController extends Controller
                 }
             }
 
+            self::actualizarAlergenos($request->allergens, $articulo);
 
             return response()->json(['message' => 'Producto creado exitosamente', 'articulo' => $articulo], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
