@@ -19,7 +19,7 @@ class OpcionPreguntaArticuloController extends Controller
         return response()->json($opciones);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $cliente_id)
     {
         try {
             // Validar los datos de entrada
@@ -41,6 +41,7 @@ class OpcionPreguntaArticuloController extends Controller
             $articulo->estado = $validatedData['status'];
             $articulo->visible_TPV = true;
             $articulo->tipo_iva_id = $validatedData['iva'];
+            $articulo->cliente_id = $cliente_id;
 
             // Guardar el nuevo artículo en la base de datos
             $articulo->save();
@@ -116,6 +117,7 @@ class OpcionPreguntaArticuloController extends Controller
             $articulo->estado = $validatedData['status'];
             $articulo->visible_TPV = true;
             $articulo->tipo_iva_id = $validatedData['iva'];
+
             
             self::actualizarAlergenos($alergenos, $articulo);
 

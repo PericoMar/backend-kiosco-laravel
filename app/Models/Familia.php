@@ -22,14 +22,17 @@ class Familia extends Model
         'imagen'
     ];
 
-    public static function getFamilies()
+    public static function getFamilies($cliente_id)
     {
         return self::select(
             'id',
             'codigo as name',
             DB::raw("CONCAT('" . env('APP_URL') . "', imagen) as img"),
             'descripcion as desc'
-        )->get()->toArray();
-        
+        )
+        ->where('cliente_id', $cliente_id)
+        ->get()
+        ->toArray();
     }
+
 }

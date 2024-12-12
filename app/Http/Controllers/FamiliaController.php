@@ -10,15 +10,15 @@ use Illuminate\Support\Facades\Log;
 class FamiliaController extends Controller
 {
 
-    public function index(): JsonResponse
+    public function index($cliente_id): JsonResponse
     {
         // Este metodo ya cambia los nombres a los mismos que el front espera
-        $families = Familia::getFamilies();
+        $families = Familia::getFamilies($cliente_id);
         return response()->json($families);
     }
 
 
-    public function store(Request $request)
+    public function store(Request $request, $cliente_id)
     {
         try {
             // Validar los datos de entrada
@@ -34,6 +34,7 @@ class FamiliaController extends Controller
             $familia->estado = $validatedData['status']; 
             $familia->descripcion = $validatedData['desc']; 
             $familia->visible_TPV = true; // O false, según sea necesario
+            $familia->cliente_id = $cliente_id;
 
             // Guardar el nuevo artículo en la base de datos
             $familia->save();

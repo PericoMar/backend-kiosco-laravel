@@ -13,7 +13,7 @@ use App\Models\Alergeno;
 
 class ArticuloController extends Controller
 {
-    public function getProductsWithCustomizations()
+    public function getProductsWithCustomizations($cliente_id)
     {
         // Aqui asignamos el tipo de tarifa que queramos.
         $tipo_tarifa_venta = $tipo_tarifa_venta_Param ?? 1; 
@@ -22,6 +22,7 @@ class ArticuloController extends Controller
             ->join('Tarifa_Venta', 'Articulos.id', '=', 'Tarifa_Venta.articulo_id')
             ->select('Articulos.*', 'Tarifa_Venta.precio_venta as precio')
             ->where('Tarifa_Venta.tipo_tarifa_id', '=', $tipo_tarifa_venta)
+            ->where('Articulos.cliente_id', $cliente_id)
             ->whereNotIn('Articulos.id', function($query) {
                 $query->select('articulo_id')
                     ->from('Opciones_Preguntas_Articulo');
@@ -103,7 +104,7 @@ class ArticuloController extends Controller
         return response()->json($articulos);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $cliente_id)
     {
         try {
             // Validar los datos de entrada
@@ -126,6 +127,7 @@ class ArticuloController extends Controller
             $articulo->estado = $validatedData['status'];
             $articulo->visible_TPV = true; 
             $articulo->tipo_iva_id = $validatedData['iva'];
+            $articulo->cliente_id = $cliente_id;
 
             // Guardar el nuevo artículo en la base de datos
             $articulo->save();

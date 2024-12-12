@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 
 class PreguntaArticuloController extends Controller
 {
-    public function index()
+    public function index($cliente_id)
     {
-        $preguntas = PreguntaArticulo::all();
+        $preguntas = PreguntaArticulo::where('cliente_id', $cliente_id)->get();
         // Yo quiero devolver la columna texto como name y el id solamente:
         $preguntas = $preguntas->map(function($pregunta) {
             return [
@@ -20,7 +20,7 @@ class PreguntaArticuloController extends Controller
         return response()->json($preguntas);
     }   
 
-    public function store(Request $request)
+    public function store(Request $request, $cliente_id)
     {
         try {
             // Validar los datos de entrada
@@ -45,6 +45,7 @@ class PreguntaArticuloController extends Controller
             $pregunta->estado = $validatedData['status'];
             $pregunta->unidades_maximas = $validatedData['max'];
             $pregunta->unidades_minimas = $validatedData['min'];
+            $pregunta->cliente_id = $cliente_id;
 
             // Guardar cambios en la base de datos
             $pregunta->save();
