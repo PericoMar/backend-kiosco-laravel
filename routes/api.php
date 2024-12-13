@@ -10,8 +10,13 @@ use App\Http\Controllers\OpcionPreguntaArticuloController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UsuariosController;
+use App\Http\Controllers\KioscosController;
+use App\Http\Controllers\ClientesController;
 
 Route::post('login', [UsuariosController::class, 'login']);
+
+Route::get('kiosko/{numSerie}', [KioscosController::class, 'getKioscoByNumSerie']);
+Route::get('estado-suscripcion/{clienteId}/kiosco', [ClientesController::class, 'getSubscriptionStatus']);
 
 Route::get('familias/{cliente_id}', [FamiliaController::class, 'index']);
 Route::post('familia/{cliente_id}', [FamiliaController::class, 'store']);
