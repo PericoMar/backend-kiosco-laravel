@@ -15,12 +15,12 @@ class KioscosController extends Controller
         }
 
         return response()->json($kiosco);
-    }
+    }   
 
     // Mostrar todos los kioscos
-    public function index()
+    public function index($cliente_id)
     {
-        $kioscos = Kiosco::all();
+        $kioscos = Kiosco::getKioscosByClienteId($cliente_id);
         return response()->json($kioscos);
     }
 

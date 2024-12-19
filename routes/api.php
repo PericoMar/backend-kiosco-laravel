@@ -12,11 +12,22 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\KioscosController;
 use App\Http\Controllers\ClientesController;
+use App\Http\Controllers\DatafonoController;
+use App\Http\Controllers\ImpresoraController;
 
 Route::post('login', [UsuariosController::class, 'login']);
 
+Route::get('kioskos/{clienteId}', [KioscosController::class, 'index']);
 Route::get('kiosko/{numSerie}', [KioscosController::class, 'getKioscoByNumSerie']);
 Route::get('estado-suscripcion/{clienteId}/kiosco', [ClientesController::class, 'getSubscriptionStatus']);
+
+Route::get('datafonos/{cliente_id}', [DatafonoController::class, 'index']);
+Route::post('datafono', [DatafonoController::class, 'store']);
+Route::put('datafono/{id}', [DatafonoController::class, 'update']);
+Route::delete('datafono/{id}', [DatafonoController::class, 'destroy']);
+
+Route::get('impresoras/{cliente_id}', [ImpresoraController::class, 'index']);
+Route::post('impresora', [ImpresoraController::class, 'store']);
 
 Route::get('familias/{cliente_id}', [FamiliaController::class, 'index']);
 Route::post('familia/{cliente_id}', [FamiliaController::class, 'store']);

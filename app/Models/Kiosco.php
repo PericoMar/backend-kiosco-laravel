@@ -21,6 +21,18 @@ class Kiosco extends Model
         'nombre',
     ];
 
+    public static function getKioscosByClienteId($cliente_id)
+    {
+        // Validamos que $cliente_id sea un número válido
+        if (!is_numeric($cliente_id)) {
+            return [];
+        }
+
+        return self::where('cliente_id', $cliente_id)
+            ->get()
+            ->toArray();
+    }
+
     // Relación con cliente (si aplica)
     public function cliente()
     {
