@@ -16,7 +16,7 @@ class ClientesSeeder extends Seeder
     {
         DB::table('Clientes')->insert(
             [
-                'nombre' => 'Kong Software',
+                'nombre' => 'Kong Software 2',
                 'email' => 'desarrollo@kongconsulting.es',
                 'telefono' => '66666666666',
                 'estado_suscripcion' => 1,

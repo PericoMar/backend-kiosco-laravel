@@ -45,13 +45,6 @@ class DatafonoController extends Controller
             'TID.unique' => 'El TID ya está en uso.',
         ]);
 
-        // El estado si es habilitado es 1, si no es 0:
-        if ($validatedData['estado'] == 'habilitado') {
-            $validatedData['estado'] = 1;
-        } else {
-            $validatedData['estado'] = 0;
-        }
-
         // Crear un nuevo dataphone
         $dataphone = Datafono::create($validatedData);
 

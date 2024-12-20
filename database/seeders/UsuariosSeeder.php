@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 class UsuariosSeeder extends Seeder
 {
@@ -18,13 +19,13 @@ class UsuariosSeeder extends Seeder
     {
         DB::table('Usuarios')->insert(
             [
-                'usuario' => 'eduardokong',
-                'contraseña' => Hash::make('user12'),
+                'usuario' => 'userhelados',
+                'password' => Hash::make('helados12'),
                 'nombre' => 'Eduardo',
                 'rol' => 'comercial',
-                'created_at' => now(),
-                'updated_at' => now(),
-                'cliente_id' => 1,
+                'created_at' => Carbon::now()->format('Y-m-d\TH:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d\TH:i:s'),
+                'cliente_id' => 2,
             ]);
     }
 }
