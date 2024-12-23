@@ -11,12 +11,15 @@ class Impresora extends Model
 
     // Define la tabla asociada (opcional si el nombre sigue las convenciones)
     protected $table = 'Impresoras';
+    public $timestamps = false;
 
     // Define los campos que pueden ser llenados de forma masiva
     protected $fillable = [
         'nombre',
         'impresora_ip',
         'estado',
+        'zona', 
+        'es_integrada',
         'descripcion',
         'cliente_id',
     ];

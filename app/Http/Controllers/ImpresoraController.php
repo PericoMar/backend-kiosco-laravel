@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Impresora;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ImpresoraController extends Controller
 {
@@ -13,7 +14,7 @@ class ImpresoraController extends Controller
     public function index($cliente_id)
     {
         $impresoras = Impresora::getImpresorasByClienteId($cliente_id);
-        return response()->json($impresoras, 200);
+        return response()->json($impresoras, 200);  
     }
 
     /**
@@ -23,15 +24,21 @@ class ImpresoraController extends Controller
     {
         $validatedData = $request->validate([
             'nombre' => 'required|string|max:255',
-            'impresora_ip' => 'required|ip',
-            'estado' => 'required|boolean',
+            'impresora_ip' => 'required|string',
+            'estado' => 'required|integer',
+            'zona' => 'nullable|string|max:255',
+            'es_integrada' => 'nullable|boolean',
             'descripcion' => 'nullable|string',
             'cliente_id' => 'required|integer',
         ]);
 
         $impresora = Impresora::create($validatedData);
 
-        return response()->json($impresora, 201);
+        return response()->json([
+            'success' => true,
+            'message' => 'Dataphone created successfully.',
+            'data' => $impresora,
+        ], 201); // Código HTTP 201: Creado
     }
 
     /**
