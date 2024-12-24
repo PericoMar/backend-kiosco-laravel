@@ -45,13 +45,14 @@ class DatafonoController extends Controller
             'TID.unique' => 'El TID ya está en uso.',
         ]);
 
+
         // Crear un nuevo dataphone
         $dataphone = Datafono::create($validatedData);
 
         // Retornar la respuesta
         return response()->json([
             'success' => true,
-            'message' => 'Dataphone created successfully.',
+            'message' => 'Datafono creado cone exito.',
             'data' => $dataphone,
         ], 201); // Código HTTP 201: Creado
     }

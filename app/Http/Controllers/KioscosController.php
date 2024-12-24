@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kiosco;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class KioscosController extends Controller
 {
@@ -40,15 +41,27 @@ class KioscosController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'num_serie' => 'required|string|max:255',
+            'num_serie' => 'required|string|max:255|unique:Kioscos,num_serie',
+            'impresora_integrada_id' => 'nullable|integer|unique:Kioscos,impresora_integrada_id',
             'datafono_id' => 'nullable|integer',
             'cliente_id' => 'nullable|integer',
             'nombre' => 'required|string|max:255',
+            'estado' => 'required|integer',
+        ], [
+            'num_serie.unique' => 'El número de serie ya está en uso.',
+            'impresora_integrada_id.unique' => 'La impresora ya está asignada a otro kiosco.',
         ]);
+
+        $validatedData['created_at'] = Carbon::now()->format('Y-m-d\TH:i:s');
+        $validatedData['updated_at'] = Carbon::now()->format('Y-m-d\TH:i:s');
 
         $kiosco = Kiosco::create($validatedData);
 
-        return response()->json(['message' => 'Kiosco creado con éxito', 'kiosco' => $kiosco], 201);
+        return response()->json([
+            'success' => true,
+            'message' => 'Kiosco creado con exito.',
+            'data' => $kiosco,
+        ], 201); // Código HTTP 201: Creado
     }
 
     // Actualizar un kiosco existente

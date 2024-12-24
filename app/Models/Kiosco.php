@@ -13,12 +13,16 @@ class Kiosco extends Model
     // Tabla asociada
     protected $table = 'Kioscos';
 
+    public $timestamps = false;
+
     // Campos que pueden ser asignados masivamente
     protected $fillable = [
         'num_serie',
         'datafono_id',
         'cliente_id',
+        'impresora_integrada_id',
         'nombre',
+        'estado'
     ];
 
     public static function getKioscosByClienteId($cliente_id)

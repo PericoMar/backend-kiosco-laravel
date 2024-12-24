@@ -67,11 +67,13 @@ class ImpresoraController extends Controller
         }
 
         $validatedData = $request->validate([
-            'nombre' => 'sometimes|required|string|max:255',
-            'impresora_ip' => 'sometimes|required|ip',
-            'estado' => 'sometimes|required|boolean',
+            'nombre' => 'nullable|string|max:255',
+            'impresora_ip' => 'nullable|string',
+            'estado' => 'nullable|integer',
+            'zona' => 'nullable|string|max:255',
+            'es_integrada' => 'nullable|boolean',
             'descripcion' => 'nullable|string',
-            'cliente_id' => 'sometimes|required|integer',
+            'cliente_id' => 'nullable|integer',
         ]);
 
         $impresora->update($validatedData);
