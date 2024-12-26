@@ -24,6 +24,10 @@ class Impresora extends Model
         'cliente_id',
     ];
 
+    protected $casts = [
+        'es_integrada' => 'integer', // Convertir es_integrada a un entero
+    ];
+
     // Si no usas timestamps en esta tabla, descomenta la siguiente línea
     // public $timestamps = false;
 

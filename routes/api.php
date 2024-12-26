@@ -52,7 +52,7 @@ Route::put('pregunta/{id}', [PreguntaArticuloController::class, 'update']);
 Route::delete('pregunta/{id}', [PreguntaArticuloController::class, 'destroy']);
 
 Route::post('opcion/{cliente_id}', [OpcionPreguntaArticuloController::class, 'store']);
-Route::put('opcion/{cliente_id}/{id}', [OpcionPreguntaArticuloController::class, 'update']);
+Route::put('opcion/{id}', [OpcionPreguntaArticuloController::class, 'update']);
 Route::delete('opcion/{id}', [OpcionPreguntaArticuloController::class, 'destroy']);
 
 Route::post('/upload-image/{tableName}/{recordId}/{columnName}', [ImageController::class, 'uploadImage']);

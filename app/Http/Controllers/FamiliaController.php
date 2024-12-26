@@ -6,6 +6,7 @@ use App\Models\Familia;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log; 
+use App\Models\ImpresoraFamilia;
 
 class FamiliaController extends Controller
 {
@@ -26,6 +27,7 @@ class FamiliaController extends Controller
                 'name' => 'required|string|max:255',
                 'status' => 'required|integer',
                 'desc' => 'nullable|string',
+                'printers' => 'nullable|array',
             ]);
 
 
@@ -38,6 +40,16 @@ class FamiliaController extends Controller
 
             // Guardar el nuevo artículo en la base de datos
             $familia->save();
+
+            if ($request->has('printers')) {
+                foreach ($request->printers as $printerId) {
+                    ImpresoraFamilia::create([
+                        'id_impresora' => $printerId,
+                        'id_familia' => $familia->id,
+                    ]);
+                }
+            }
+
 
             return response()->json(['message' => 'Producto creado exitosamente', 'familia' => $familia], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -53,6 +65,8 @@ class FamiliaController extends Controller
     {
         $familia = Familia::findOrFail($id);
 
+        $familia->printers = ImpresoraFamilia::where('id_familia', $familia->id)->pluck('id_impresora');
+
         return response()->json([
             'productType' => 'Producto',
             'name' => $familia->codigo,
@@ -60,8 +74,6 @@ class FamiliaController extends Controller
             'status' => $familia->estado ? 'Habilitado' : 'Deshabilitado',
             'desc' => $familia->descripcion,
         ]);
-
-        return response()->json($familia);
     }
 
     public function update(Request $request, $id)
@@ -71,6 +83,7 @@ class FamiliaController extends Controller
             'name' => 'required|string|max:255',
             'status' => 'required|integer',
             'desc' => 'nullable|string',
+            'printers' => 'nullable|array',
         ]);
 
 
@@ -82,6 +95,18 @@ class FamiliaController extends Controller
         $familia->visible_TPV = true; // O false, según sea necesario
 
         $familia->save();
+
+        // Limpiar las impresoras asociadas
+        ImpresoraFamilia::where('id_familia', $familia->id)->delete();
+
+        if ($request->has('printers')) {
+            foreach ($request->printers as $printerId) {
+                ImpresoraFamilia::create([
+                    'id_impresora' => $printerId,
+                    'id_familia' => $familia->id,
+                ]);
+            }
+        }
 
         return response()->json(["familia" => $id]);
     }
