@@ -73,6 +73,7 @@ class FamiliaController extends Controller
             'img' => $familia->imagen,
             'status' => $familia->estado ? 'Habilitado' : 'Deshabilitado',
             'desc' => $familia->descripcion,
+            'printers' => $familia->printers,
         ]);
     }
 
